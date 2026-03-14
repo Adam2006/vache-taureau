@@ -1,12 +1,12 @@
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAILiqHftW7c-7PFcj1_1k1yedVv7-kwYA",
-  authDomain: "vache-taureau-f584e.firebaseapp.com",
-  projectId: "vache-taureau-f584e",
-  storageBucket: "vache-taureau-f584e.firebasestorage.app",
-  messagingSenderId: "764734881202",
-  appId: "1:764734881202:web:b80ce893e028ad8ca0f8ab",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
