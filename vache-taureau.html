@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vache-Taureau</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --surface: #16161a;
+    --surface2: #1e1e24;
+    --border: #2a2a35;
+    --accent: #f5c842;
+    --accent2: #e8553e;
+    --cow: #6ee7b7;
+    --bull: #f5c842;
+    --text: #f0f0f0;
+    --muted: #666680;
+    --radius: 20px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  /* PHONE FRAME */
+  .phone {
+    width: 375px;
+    min-height: 780px;
+    background: var(--surface);
+    border-radius: 44px;
+    border: 2px solid var(--border);
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+    flex-shrink: 0;
+  }
+
+  .phone-label {
+    text-align: center;
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  /* NOTCH */
+  .notch {
+    width: 120px;
+    height: 30px;
+    background: var(--bg);
+    border-radius: 0 0 20px 20px;
+    margin: 0 auto 0;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+  }
+
+  .screen {
+    padding: 48px 24px 32px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* STATUS BAR */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    padding: 0 4px;
+  }
+
+  /* ─── SCREEN 1: HOME ─── */
+  .home-screen .logo-area {
+    text-align: center;
+    padding: 32px 0 40px;
+  }
+
+  .home-screen .emoji-logo {
+    font-size: 64px;
+    display: block;
+    margin-bottom: 16px;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .home-screen h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .home-screen h1 span {
+    color: var(--accent);
+  }
+
+  .home-screen .tagline {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+    letter-spacing: 0.05em;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    border: none;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: transform 0.15s, opacity 0.15s;
+  }
+
+  .btn:active { transform: scale(0.97); }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0d0f;
+  }
+
+  .btn-secondary {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  .btn-danger {
+    background: var(--accent2);
+    color: #fff;
+  }
+
+  .home-screen .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .mode-cards {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .mode-card {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .mode-card.selected {
+    border-color: var(--accent);
+    background: rgba(245, 200, 66, 0.08);
+  }
+
+  .mode-card .mode-emoji { font-size: 28px; display: block; margin-bottom: 8px; }
+  .mode-card .mode-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .mode-card .mode-desc { font-size: 10px; color: var(--muted); margin-top: 3px; }
+
+  /* ─── SCREEN 2: SETUP ─── */
+  .setup-screen .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  .setup-screen .section-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .field-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .digit-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .digit-btn {
+    flex: 1;
+    padding: 14px 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+
+  .digit-btn.selected {
+    background: var(--accent);
+    color: #0d0d0f;
+    border-color: var(--accent);
+  }
+
+  .time-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .time-btn {
+    padding: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+  }
+
+  .time-btn.selected {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(245,200,66,0.08);
+  }
+
+  /* ─── SCREEN 3: SECRET NUMBER ─── */
+  .secret-screen .instruction {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  .digit-inputs {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+
+  .digit-input {
+    width: 60px;
+    height: 72px;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent);
+    transition: border-color 0.2s;
+    position: relative;
+  }
+
+  .digit-input.filled { border-color: var(--accent); }
+  .digit-input.active { border-color: var(--text); }
+
+  .digit-input .cursor {
+    width: 2px;
+    height: 30px;
+    background: var(--text);
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  .keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .key {
+    padding: 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    text-align: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.1s, transform 0.1s;
+    color: var(--text);
+  }
+
+  .key:active { transform: scale(0.94); background: var(--border); }
+  .key.delete { font-size: 16px; color: var(--muted); }
+  .key.zero { grid-column: 2; }
+
+  /* ─── SCREEN 4: GAME ─── */
+  .game-screen .game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .player-turn {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .turn-badge {
+    background: var(--accent);
+    color: #0d0d0f;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+  }
+
+  .timer-bar-wrap {
+    background: var(--surface2);
+    height: 4px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .timer-bar {
+    height: 100%;
+    width: 65%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 1s linear;
+  }
+
+  .guess-history {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+    max-height: 300px;
+  }
+
+  .guess-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--surface2);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .guess-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    flex: 1;
+    color: var(--text);
+  }
+
+  .guess-result {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .result-chip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+  }
+
+  .result-chip.taureau {
+    background: rgba(245,200,66,0.15);
+    color: var(--bull);
+    border: 1px solid rgba(245,200,66,0.3);
+  }
+
+  .result-chip.vache {
+    background: rgba(110,231,183,0.1);
+    color: var(--cow);
+    border: 1px solid rgba(110,231,183,0.2);
+  }
+
+  .guess-input-area {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .guess-input {
+    flex: 1;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .guess-input:focus { border-color: var(--accent); }
+
+  .send-btn {
+    width: 52px;
+    height: 52px;
+    background: var(--accent);
+    border: none;
+    border-radius: 14px;
+    font-size: 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s;
+    flex-shrink: 0;
+  }
+
+  .send-btn:active { transform: scale(0.93); }
+
+  /* ─── SCREEN 5: INVITE ─── */
+  .invite-screen .code-box {
+    background: var(--surface2);
+    border: 2px solid var(--accent);
+    border-radius: 20px;
+    padding: 28px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .invite-screen .code-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .invite-screen .code {
+    font-family: 'Syne', sans-serif;
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: 0.25em;
+    color: var(--accent);
+  }
+
+  .invite-screen .code-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+
+  .waiting-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 28px;
+  }
+
+  .dot-pulse {
+    display: flex;
+    gap: 4px;
+  }
+
+  .dot-pulse span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--muted);
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+
+  .dot-pulse span:nth-child(2) { animation-delay: 0.2s; }
+  .dot-pulse span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes pulse {
+    0%,80%,100% { transform: scale(0.7); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+
+  /* NAV LABEL */
+  .nav-back {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+    margin-bottom: 24px;
+    width: fit-content;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+
+  /* WIN SCREEN */
+  .win-screen {
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .win-emoji {
+    font-size: 72px;
+    display: block;
+    margin-bottom: 16px;
+    animation: bounce 0.6s ease infinite alternate;
+  }
+
+  @keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-12px); }
+  }
+
+  .win-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .win-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .win-stat {
+    display: inline-block;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--accent);
+    margin-bottom: 32px;
+  }
+
+  /* OPPONENT WAITING */
+  .opponent-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .opp-avatar {
+    width: 36px;
+    height: 36px;
+    background: var(--accent2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .opp-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .opp-status {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .opp-guesses {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  /* PAGE LABEL */
+  .page-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hidden { display: none; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ SCREEN 1: HOME ═══════════════════════════════ -->
+<div class="page-wrap">
+  <p class="phone-label">Accueil</p>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen home-screen">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>●●●●</span>
+      </div>
+      <div class="logo-area">
+        <span class="emoji-logo">🐄🐂</span>
+        <h1>Vache<span>–</span>Taureau</h1>
+        <p class="tagline">devine le nombre secret</p>
+      </div>
+      <p class="field-label">Mode de jeu</p>
+      <div class="mode-cards">
+        <div class="mode-card selected">
+          <span class="mode-emoji">🤖</span>
+          <div class="mode-name">vs IA</div>
+          <div class="mode-desc">Jouer seul</div>
+        </div>
+        <div class="mode-card">
+          <span class="mode-emoji">👥</span>
+          <div class="mode-name">vs Ami</div>
+          <div class="mode-desc">Inviter</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary">Nouvelle Partie</button>
+        <button class="btn btn-secondary">Continuer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ SCREEN 2: SETUP ═══════════════════════════════ -->
+<div class="page-wrap">
+  <p class="phone-label">Configuration</p>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen setup-screen">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>●●●●</span>
+      </div>
+      <div class="nav-back">← Retour</div>
+      <div class="section-title">Configuration</div>
+      <div class="section-sub">Choisissez les règles de la partie</div>
+
+      <div class="field-label">Nombre de chiffres</div>
+      <div class="digit-selector">
+        <div class="digit-btn">3</div>
+        <div class="digit-btn selected">4</div>
+        <div class="digit-btn">5</div>
+      </div>
+
+      <div class="field-label">Difficulté IA</div>
+      <div style="display:flex;gap:10px;margin-bottom:24px;">
+        <div class="digit-btn selected" style="font-size:14px;padding:14px 0;">😴 Facile</div>
+        <div class="digit-btn" style="font-size:14px;padding:14px 0;">🧠 Difficile</div>
+      </div>
+
+      <div class="field-label">Temps par tour</div>
+      <div class="time-selector">
+        <div class="time-btn">1 heure</div>
+        <div class="time-btn selected">6 heures</div>
+        <div class="time-btn">12 heures</div>
+        <div class="time-btn">24 heures</div>
+      </div>
+
+      <button class="btn btn-primary" style="margin-top:auto;">Suivant →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ SCREEN 3: SECRET NUMBER ═══════════════════════════════ -->
+<div class="page-wrap">
+  <p class="phone-label">Nombre secret</p>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen secret-screen">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>●●●●</span>
+      </div>
+      <div class="nav-back">← Retour</div>
+      <div class="section-title" style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px;">Votre nombre secret</div>
+      <p class="instruction">Entrez un nombre à 4 chiffres uniques.<br>Votre adversaire devra le deviner.</p>
+
+      <div class="digit-inputs">
+        <div class="digit-input filled">7</div>
+        <div class="digit-input filled">3</div>
+        <div class="digit-input active"><div class="cursor"></div></div>
+        <div class="digit-input"></div>
+      </div>
+
+      <div class="keypad">
+        <div class="key">1</div><div class="key">2</div><div class="key">3</div>
+        <div class="key">4</div><div class="key">5</div><div class="key">6</div>
+        <div class="key">7</div><div class="key">8</div><div class="key">9</div>
+        <div class="key delete">⌫</div><div class="key zero">0</div><div class="key" style="opacity:0;pointer-events:none;"></div>
+      </div>
+
+      <button class="btn btn-primary" style="opacity:0.4;">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ SCREEN 4: INVITE CODE ═══════════════════════════════ -->
+<div class="page-wrap">
+  <p class="phone-label">Invitation</p>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen invite-screen">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>●●●●</span>
+      </div>
+      <div class="nav-back">← Retour</div>
+      <div class="section-title" style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px;">Inviter un ami</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:28px;">Partagez ce code avec votre adversaire pour démarrer la partie.</p>
+
+      <div class="code-box">
+        <div class="code-label">Code d'invitation</div>
+        <div class="code">X7K2PQ</div>
+        <div class="code-sub">Expire dans 10 minutes</div>
+      </div>
+
+      <button class="btn btn-secondary" style="margin-bottom:12px;">📋 Copier le code</button>
+      <button class="btn btn-ghost" style="margin-bottom:28px;">📤 Partager via...</button>
+
+      <div class="waiting-indicator">
+        <div class="dot-pulse">
+          <span></span><span></span><span></span>
+        </div>
+        En attente de l'adversaire
+      </div>
+
+      <button class="btn btn-danger" style="margin-top:auto;">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ SCREEN 5: GAME IN PROGRESS ═══════════════════════════════ -->
+<div class="page-wrap">
+  <p class="phone-label">Partie en cours</p>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen game-screen" style="display:flex;flex-direction:column;">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>●●●●</span>
+      </div>
+
+      <div class="game-header">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;">Vache-Taureau</div>
+          <div class="player-turn">Tour 5 · 4 chiffres</div>
+        </div>
+        <div class="turn-badge">VOTRE TOUR</div>
+      </div>
+
+      <div class="timer-bar-wrap">
+        <div class="timer-bar"></div>
+      </div>
+
+      <div class="opponent-box">
+        <div class="opp-avatar">🎮</div>
+        <div>
+          <div class="opp-name">Lucas</div>
+          <div class="opp-status">A joué il y a 12 min</div>
+        </div>
+        <div class="opp-guesses">5 essais<br><span style="color:var(--accent2)">●●●○○</span></div>
+      </div>
+
+      <p class="field-label" style="margin-bottom:8px;">Mes tentatives</p>
+      <div class="guess-history">
+        <div class="guess-row">
+          <div class="guess-number">1 2 3 4</div>
+          <div class="guess-result">
+            <div class="result-chip taureau">🐂 1</div>
+            <div class="result-chip vache">🐄 2</div>
+          </div>
+        </div>
+        <div class="guess-row">
+          <div class="guess-number">5 6 1 3</div>
+          <div class="guess-result">
+            <div class="result-chip taureau">🐂 0</div>
+            <div class="result-chip vache">🐄 2</div>
+          </div>
+        </div>
+        <div class="guess-row">
+          <div class="guess-number">2 7 4 8</div>
+          <div class="guess-result">
+            <div class="result-chip taureau">🐂 2</div>
+            <div class="result-chip vache">🐄 1</div>
+          </div>
+        </div>
+        <div class="guess-row">
+          <div class="guess-number">2 0 4 9</div>
+          <div class="guess-result">
+            <div class="result-chip taureau">🐂 3</div>
+            <div class="result-chip vache">🐄 0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guess-input-area" style="margin-top:auto;">
+        <input class="guess-input" type="text" placeholder="_ _ _ _" maxlength="4" value="2 _ 4 _" />
+        <button class="send-btn">→</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ SCREEN 6: WIN ═══════════════════════════════ -->
+<div class="page-wrap">
+  <p class="phone-label">Victoire !</p>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+      <div class="status-bar" style="width:100%;margin-bottom:20px;">
+        <span>9:41</span>
+        <span>●●●●</span>
+      </div>
+      <div class="win-screen">
+        <span class="win-emoji">🏆</span>
+        <div class="win-title">Bravo !</div>
+        <p class="win-sub">Vous avez deviné le nombre secret</p>
+        <div style="font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--accent);letter-spacing:0.2em;margin:12px 0 16px;">2 5 4 6</div>
+        <div class="win-stat">✅ Résolu en 5 essais</div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:24px;">Lucas n'a pas encore trouvé... 😈</p>
+      </div>
+      <div style="width:100%;display:flex;flex-direction:column;gap:10px;margin-top:auto;">
+        <button class="btn btn-primary">🎮 Rejouer</button>
+        <button class="btn btn-ghost">Retour à l'accueil</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
